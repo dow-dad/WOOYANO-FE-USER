@@ -1,0 +1,31 @@
+
+      #일반 팝업 알럿
+      Swal.fire({
+          text: `모든 정보를 입력해주세요`,
+          toast: false,
+          position: "center",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: false,
+          customClass: {
+            container: "my-swal",
+            popup: 'my-swal-position'
+          },
+      });
+
+      #Input 팝업 알럿
+      Swal.fire({
+            input: "password",
+            inputPlaceholder: "비밀번호를 입력해주세요.",
+            toast: false,
+            position: "center",
+            showConfirmButton: true,
+            showCancelButton: true,
+            customClass: {
+              container: "my-swal-input-container", // 팝업 컨테이너
+              confirmButton: "my-swal-input-ConfirmButton", //확인 버튼 css
+              cancelButton: "my-swal-input-CancelButton",   //취소 버튼 css 
+              input: "my-swal-input",  //인풋 타입 css
+              popup: "my-swal-position", // 팝업 css
+            },
+      });

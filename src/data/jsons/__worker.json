@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "img": "https://img.freepik.com/free-photo/portrait-of-white-man-isolated_53876-40306.jpg",
+    "name": "임찬섭",
+    "counts": 50,
+    "desc" : "투룸, 쓰리룸 전문 가사도우미 ! 고객 만족율 99%"
+  },
+  {
+    "id": "2",
+    "img":"https://img.freepik.com/premium-photo/portrait-of-happy-successful-asian-woman-standing-looking-at-camera-with-charming-smile_2221-9985.jpg",
+    "name": "이하늘",
+    "counts": 100,
+    "desc" : "꼼곰한 가사도우미 ! 세심하게 챙겨드립니다:)"
+  }
+]
