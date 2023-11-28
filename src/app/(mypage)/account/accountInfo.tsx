@@ -9,12 +9,12 @@ import Button from "@/shared/Button";
 
 export default function AccountInfo({
   accountInfo,
-  session,
 }: {
   accountInfo: AccountInfoType;
   session: any
 }) {
   //세션정보 불러오기
+  const session = useSession();
   const usertoken = session.data?.user.result.token;
   const useremail = session.data?.user.result.email;
 
