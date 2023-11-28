@@ -52,9 +52,12 @@ export default function ChatComponent() {
   }
 
   return (
-    <div className='bg-[#DEDEDE] dark:bg-background1 p-3 w-full h-[100vh] fixed rounded-md  mx-auto pt-2'>
+    <div className='bg-[#F2F2F2] dark:bg-background1 p-3 w-full h-[100vh] fixed rounded-md  mx-auto pt-2'>
       <div>
-        <span className="font-semibold text-[12px] text-center">{"업체 추천해줘"}라고 질문하시면 업체 리스트를 제공해 드립니다.</span>
+        {
+          messages[0]?null:<span className="font-semibold text-[12px] text-center text-black flex justify-center items-end pt-2">{"업체 추천해줘"}라고 질문하시면 업체 리스트를 제공해 드립니다.</span>
+        }
+        
       </div>
       <div className="overflow-y-scroll max-h-[75%] scrollbar-hide" >
         {messages.map((message: Message) => {
@@ -64,11 +67,11 @@ export default function ChatComponent() {
               {
                 message.role === "assistant"
                   ?
-                  <h3 className="text-lg font-semibold mt-2">
+                  <h3 className="text-sm font-semibold mt-2">
                     우야노
                   </h3>
                   :
-                  <h3 className="text-lg font-semibold mt-2 flex justify-end pr-2">
+                  <h3 className="text-sm font-semibold mt-2 flex justify-end pr-2">
                     {username}
                   </h3>
               }
@@ -96,7 +99,7 @@ export default function ChatComponent() {
                 return (
                   <div key={message.id + index} >
                     <p
-                      className={`border leading-[50px] text-sm rounded-lg ${isAssistant ? 'bg-[#D3AB7C]' : 'bg-[#50555C]'} text-white pl-2`}
+                      className={`border leading-[25px] p-4 text-sm rounded-lg ${isAssistant ? 'bg-[#50555C]' : 'bg-[#D3AB7C]'} text-white pl-2`}
                     >
                       {containsLink ? (
 

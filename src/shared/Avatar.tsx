@@ -41,8 +41,8 @@ const Avatar: FC<AvatarProps> = ({
           className={`absolute inset-0 w-full h-full object-cover ${radius}`}
           src={url}
           alt={name}
-          width={24}
-          height={24}
+          width={200}
+          height={200}
         />
       )}
       <span className="wil-avatar__name">{name[0]}</span>

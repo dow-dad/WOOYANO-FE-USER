@@ -35,7 +35,7 @@ const CommentListing: FC<CommentListingProps> = ({
         ))}
       </div>
       <div
-        className={`nc-CommentListing flex justify-center space-x-4 ${className}`}
+        className={`nc-CommentListing flex justify-center flex-col space-x-4 ${className}`}
         data-nc-id="CommentListing"
       >
 

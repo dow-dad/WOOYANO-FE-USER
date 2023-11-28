@@ -24,7 +24,7 @@ function Worker({setOnClickData,data}:{setOnClickData:React.Dispatch<SetStateAct
           <a className="flex  text-xl text-black font-medium" href="##">
             {data.name}
             <p className='flex items-center text-sm text-gray-500'>
-              기사
+              
             </p>
           </a>
           
