@@ -13,47 +13,134 @@ import { FaHeart, FaThumbsUp } from "react-icons/fa";
 import { DEMO_MOVING_LISTINGS } from "@/data/listings";
 import TapMenu from "@/components/detail/tap/tapMenu";
 import DetailTap2 from "./DetailTap2";
+import { useSession } from "next-auth/react";
+import ErrorFunction from "@/app/ErrorFun";
+import { StoreInfoType } from "@/types/house-keeper-detail/storeInfoType";
+import { ReviewDataType } from "@/types/house-keeper-detail/reviewDataType";
+import { ReviewFavoriteCount } from "@/types/serviceList/reviewFavoriteCount";
 
-const DEMO_DATA = DEMO_MOVING_LISTINGS;
 
-export interface ListingStayDetailPageProps {}
 
-const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
+export interface ListingStayDetailPageProps { }
 
-  let [isOpenModalAmenities, setIsOpenModalAmenities] = useState(false);
+const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ }) => {
+
+
 
   const thisPathname = usePathname();
   const router = useRouter();
-  const params=useSearchParams().get('storeid');
-  const [ data, setData ] = useState<any>({} as any);
+  const params = useSearchParams().get('storeid');
+  const [data, setData] = useState<any>({} as any);
+
+  const session = useSession();
+  const usertoken = session.data?.user.result.token;
+  const useremail = session.data?.user.result.email;
+
+  const [storeInfo, setStoreInfo] = useState<StoreInfoType>({
+    clientAddress: "",
+    description: "",
+    name: "",
+    registrationNumber: "",
+    serviceAreaList: [],
+    serviceId: 0,
+    serviceImgUrlList: []
+  })
+  const [reviewData, setReviewData] = useState<ReviewDataType[]>([]);
+  const [reviewFavoriteCount, setReviewFavoriteCount] = useState<ReviewFavoriteCount>();
   // console.log(thisPathname);
-  
-  useEffect(()=>{
-    // console.log(DEMO_DATA)
-    const getData = async () => {
-      // const data = await fetch('test api uri');
-      const res = DEMO_DATA.find( item => item.id === `stayListing_${params}_`)
-      // console.log(res)
-      setData(res)
+
+  useEffect(() => {
+    getStoreInfo()
+    getReviewFavorite()
+    getStoreReview()
+  }, [usertoken])
+
+
+  // console.log(storeInfo);
+
+  const getStoreInfo = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/client/service-detail?serviceId=${params}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+        Email: `${useremail}`,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // console.log("data:", data);
+      setStoreInfo(data.result)
+      return data;
+    } else {
+      ErrorFunction("업체 정보를 불러올 수 없습니다.");
     }
-    getData();
-  },[params])
-  
-
-  // console.log(params);
-  
-
-  function closeModalAmenities() {
-    setIsOpenModalAmenities(false);
-  }
-
-  function openModalAmenities() {
-    setIsOpenModalAmenities(true);
-  }
-
-  const handleOpenModalImageGallery = () => {
-    router.push(`${thisPathname}/?modal=PHOTO_TOUR_SCROLLABLE` as Route);
   };
+
+  const addFavorite = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/bookmark`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+        Email: `${useremail}`,
+      },
+      body:JSON.stringify({
+        serviceId:storeInfo.serviceId
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    } else {
+      ErrorFunction("찜이 되지 않았습니다.");
+    }
+  };
+
+  const getReviewFavorite = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/count/review_bookmark`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+        Email: `${useremail}`,
+      },
+      body: JSON.stringify([params])
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // console.log("data:", data);
+      setReviewFavoriteCount(data.result[0])
+      return data;
+    } else {
+      ErrorFunction("검색결과가 없습니다.");
+    }
+  };
+
+  const getStoreReview = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/review/list?serviceId=${params}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+        Email: `${useremail}`,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // console.log("data:", data);
+      setReviewData(data.result)
+      return data;
+    } else {
+      ErrorFunction("리뷰 정보를 불러올 수 없습니다.");
+    }
+  };
+
+
 
   const renderSection1 = () => (
     <div className="listingSection__wrap !space-y-6">
@@ -63,7 +150,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           <Badge name="추천" />
           <span className="flex justify-start items-center">
             <i className="las la-map-marker-alt text-sm"></i>
-            <span className="ml-1 text-xs">부산광역시 해운대구</span>
+            <span className="ml-1 text-xs">{storeInfo?.clientAddress}</span>
           </span>
         </div>
         {/* 공유 및 즐겨찾기 버튼 */}
@@ -73,35 +160,34 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
       {/* 2 */}
       <div className="flex flex-col justify-center items-center gap-3 pb-5">
         <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-semibold">
-          삐까뻔쩍
+          {storeInfo?.name}
         </h2>
-        <p className="text-sm text-gray-500 md:w-[80%] text-center">청소업체고민NO! 흔적없이 꼼꼼하고 완벽하게 - 부산입주청소, 믿고 맡겨주세요! 부산에어컨청소/입주청소/홈케어시공 꼼꼼하고 깨끗한청소는 에어홈닥터입니다. 공동구매시 추가할인 해드립니다
-확실하고 꼼꼼한청소 깔끔한청소 문의주세요</p>
+        <p className="text-sm text-gray-500 md:w-[80%] text-center">{storeInfo?.description}</p>
       </div>
 
       {/* 3 */}
       <div className="flex justify-center gap-5 space-x-4">
         <div className="flex items-center gap-3">
-        {/* 좋아요 버튼 */}
-        <FaThumbsUp className="fill-sky-500" />
-        <p className="text-gray-500">{data && data.reviewCount}</p>
+          {/* 좋아요 버튼 */}
+          <FaThumbsUp className="fill-sky-500" />
+          <p className="text-gray-500">{reviewFavoriteCount?.totalReview}</p>
         </div>
 
         {/* <StartRating /> */}
-        
+
         <div className="flex items-center gap-2">
-          <FaHeart className="fill-red-600"/>
-          <p className="text-gray-500">{data && data.favorite}</p>
+          <FaHeart className="fill-red-600" onClick={()=>addFavorite()}/>
+          <p className="text-gray-500">{reviewFavoriteCount?.totalBookmark}</p>
         </div>
       </div>
     </div>
   );
 
-  
+
   const renderSidebar = () => {
     return (
       <div className="listingSectionSidebar__wrap shadow-xl">
-          {/* SUBMIT */}
+        {/* SUBMIT */}
         <ButtonPrimary href={`/serviceform`}>예약하기</ButtonPrimary>
       </div>
     );
@@ -115,7 +201,6 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
         <div className="relative grid grid-cols-3 sm:grid-cols-4 gap-1 sm:gap-2">
           <div
             className="col-span-2 row-span-3 sm:row-span-2 relative rounded-md sm:rounded-xl overflow-hidden cursor-pointer"
-            onClick={handleOpenModalImageGallery}
           >
             <Image
               fill
@@ -126,12 +211,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
             />
             <div className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity"></div>
           </div>
-          {PHOTOS.filter((_, i) => i >= 1 && i < 5).map((item, index) => (
+          {storeInfo.serviceImgUrlList.map((item, index) => (
             <div
               key={index}
-              className={`relative rounded-md sm:rounded-xl overflow-hidden ${
-                index >= 3 ? "hidden sm:block" : ""
-              }`}
+              className={`relative rounded-md sm:rounded-xl overflow-hidden ${index >= 3 ? "hidden sm:block" : ""
+                }`}
             >
               <div className="aspect-w-4 aspect-h-3 sm:aspect-w-6 sm:aspect-h-5">
                 <Image
@@ -142,27 +226,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
                   sizes="400px"
                 />
               </div>
-
-              {/* OVERLAY */}
-              <div
-                className="absolute inset-0 bg-neutral-900 bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                onClick={handleOpenModalImageGallery}
-              />
             </div>
           ))}
-
-          <button
-            className="absolute hidden md:flex md:items-center md:justify-center left-3 bottom-3 px-4 py-2 rounded-xl bg-neutral-100 text-neutral-500 hover:bg-neutral-200 z-10"
-            onClick={handleOpenModalImageGallery}
-          >
-            <Squares2X2Icon className="w-5 h-5" />
-            <span className="ml-2 text-neutral-800 text-sm font-medium">
-              Show all photos
-            </span>
-          </button>
         </div>
       </header>
-              
+
       {/* MAIN */}
       <main className=" relative z-10 mt-10 flex flex-col lg:flex-row ">
         {/* CONTENT */}
@@ -170,17 +238,17 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({}) => {
           {/* 상세페이지 레이아웃 */}
           {renderSection1()}
           <div className="flex justify-center w-full">
-            <DetailTap2 />
+            <DetailTap2 storeInfo={storeInfo} reviewData={reviewData}/>
           </div>
         </div>
-        
+
         {/* SIDEBAR */}
-        
+
         <div className="hidden lg:block flex-grow mt-14 lg:mt-0">
           {/* 스크롤 시 따라다니는 사이드바 */}
           <div className="sticky top-28">{renderSidebar()}</div>
         </div>
-        
+
       </main>
 
     </div>

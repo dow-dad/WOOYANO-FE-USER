@@ -136,7 +136,14 @@ const StayCard2 = ({ size, className, data }: { size: string | "default", classN
   return (
     <div className={`nc-StayCard2 group relative ${className}`}>
       {renderSliderGallery()}
-      <Link href={"/house-keeper-detail"}>{renderContent()}</Link>
+      <Link href={type === "1"
+        ? `/house-keeper-detail?storeid=${serviceId}`
+        : type === "2"
+          ? `/storelist-detail-2?storeid=${serviceId}`
+          : type === "3"
+            ? `/storelist-detail-2?storeid=${serviceId}`
+            : `/house-keeper-detail?storeid=${serviceId}`
+      }>{renderContent()}</Link>
     </div>
   );
 };

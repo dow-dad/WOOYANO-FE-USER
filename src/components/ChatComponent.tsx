@@ -2,7 +2,7 @@
 
 import { useChat, Message } from "ai/react"
 import { useSession } from "next-auth/react";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 
@@ -18,14 +18,18 @@ export default function ChatComponent() {
   const username = session.data?.user.result.username;
   const router = useRouter()
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
+    // console.log('scrollToBottom 호출');
+
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
+    // console.log('message추가');
+
   }, [messages]);
 
   const checkPrompt = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -55,11 +59,11 @@ export default function ChatComponent() {
     <div className='bg-[#F2F2F2] dark:bg-background1 p-3 w-full h-[100vh] fixed rounded-md  mx-auto pt-2'>
       <div>
         {
-          messages[0]?null:<span className="font-semibold text-[12px] text-center text-black flex justify-center items-end pt-2">{"업체 추천해줘"}라고 질문하시면 업체 리스트를 제공해 드립니다.</span>
+          messages[0] ? null : <span className="font-semibold text-[12px] text-center text-black flex justify-center items-end pt-2">{"업체 추천해줘"}라고 질문하시면 업체 리스트를 제공해 드립니다.</span>
         }
-        
+
       </div>
-      <div className="overflow-y-scroll max-h-[75%] scrollbar-hide" >
+      <div className="overflow-y-scroll xl:max-h-[75%] lg:max-h-[73%] md:max-h-[70%] max-h-[68%]  scrollbar-hide" >
         {messages.map((message: Message) => {
           return (
             <div key={message.id} className="pt-4" >
@@ -91,6 +95,9 @@ export default function ChatComponent() {
                   const linkTextMatch = currentTextBlock.match(/\[(.*?)\]/);
                   const linkUrlMatch = currentTextBlock.match(/\((.*?)\)/);
 
+                  console.log(linkUrlMatch);
+
+
                   linkText = linkTextMatch ? linkTextMatch[1] : "";
                   linkUrl = linkUrlMatch ? linkUrlMatch[1] : "";
 
@@ -105,7 +112,7 @@ export default function ChatComponent() {
 
                         <span
                           style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                          onClick={() => router.push(linkUrl === "http://localhost:3000/house-keeper" ? "/house-keeper" : linkUrl === "http://localhost:3000/moving-clean" ? "/moving-clean" : linkUrl === "http://localhost:3000/office-clean" ? "/office-clean" : "/")}
+                          onClick={() => router.push(linkUrl === "/house-keeper" ? "/house-keeper" : linkUrl === "/moving-clean" ? "/moving-clean" : linkUrl === "/office-clean" ? "/office-clean" : linkUrl === "/electronics-clean" ? "/electronics-clean" : "/")}
                         >
                           <p className="text-blue-400">{linkText}</p>
                         </span>
@@ -116,14 +123,15 @@ export default function ChatComponent() {
                   </div>
                 )
               })}
-          </div>
-      )
-      })}
+            </div>
+          )
+        })}
+        <div ref={messagesEndRef}></div>
       </div>
-      <div ref={messagesEndRef}></div>
-      
 
-      <form className="flex absolute bottom-[130px] w-[95vw]" onSubmit={checkPrompt}>
+
+
+      <form className="flex absolute bottom-[150px] lg:bottom-[96px] sm:bottom-[130px] xl:bottom-24  w-[95vw]" onSubmit={checkPrompt}>
         <div className="w-full">
           <textarea
             className=" w-full h-14 dark:bg-background2 border rounded-full pt-[14px] pl-[4rem] text-[12px]"

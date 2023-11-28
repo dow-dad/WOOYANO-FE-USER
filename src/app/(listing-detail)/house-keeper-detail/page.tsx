@@ -62,7 +62,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ }) => {
     getReviewFavorite()
     getStoreReview()
   }, [usertoken])
-  // console.log(onClickData);
+  
 
   const getStoreWorkerList = async () => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/client/worker/list?serviceId=${params}`;
@@ -81,6 +81,27 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ }) => {
       return data;
     } else {
       ErrorFunction("기사를 불러올 수 없습니다.");
+    }
+  };
+
+  const addFavorite = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/bookmark`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+        Email: `${useremail}`,
+      },
+      body:JSON.stringify({
+        serviceId:storeInfo.serviceId
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    } else {
+      ErrorFunction("찜이 되지 않았습니다.");
     }
   };
 
@@ -182,7 +203,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ }) => {
         {/* <StartRating /> */}
 
         <div className="flex items-center gap-2">
-          <FaHeart className="fill-red-600" />
+          <FaHeart className="fill-red-600" onClick={()=>addFavorite()}/>
           <p className="text-gray-500">{reviewFavoriteCount?.totalBookmark}</p>
         </div>
       </div>

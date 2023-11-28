@@ -50,7 +50,7 @@ const StaySearchForm: FC<{}> = ({ }) => {
 
   const renderForm = () => {
     return (
-      <form className="w-full relative mt-8 flex rounded-full shadow-xl dark:shadow-2xl bg-white dark:bg-neutral-800 ">
+      <form className="w-full grid relative mt-8 md:flex md:rounded-full rounded-lg shadow-xl dark:shadow-2xl bg-white dark:bg-neutral-800 ">
         {/* 검색창 위치 */}
         <LocationInput className="flex-[1.5]" handleSearchForm={handleSearchForm} />
         <div className="self-center border-r border-slate-200 dark:border-slate-700 h-8"></div>

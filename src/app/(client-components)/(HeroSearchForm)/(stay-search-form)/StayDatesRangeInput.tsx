@@ -66,7 +66,7 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
       setUrl(`/office-clean/?region=${searchForm.region_code}&type=3&date=${searchForm.date}` as SetStateAction<PathName | undefined>);
     }
     if (searchForm.service==="가전제품 청소"){
-      setUrl(`/house-keeper/?region=${searchForm.region_code}&type=4&date=${searchForm.date}` as SetStateAction<PathName | undefined>);
+      setUrl(`/electronics-clean/?region=${searchForm.region_code}&type=4&date=${searchForm.date}` as SetStateAction<PathName | undefined>);
     }
   }
 
@@ -129,7 +129,7 @@ const StayDatesRangeInput: FC<StayDatesRangeInputProps> = ({
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute xl:left-1/2 z-10 mt-3 top-full min-w-[350px] -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
+            <Popover.Panel className="absolute left-1/2 w-full xl:left-1/2 z-10 mt-3 top-full min-w-[350px] -translate-x-1/2 transform px-4 sm:px-0 lg:max-w-3xl">
               <div className="overflow-hidden rounded-3xl shadow-lg ring-1 ring-black ring-opacity-5 bg-white dark:bg-neutral-800 p-6">
                 <div className='w-full'>
                   <Calendar
