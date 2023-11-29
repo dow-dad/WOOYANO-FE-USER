@@ -8,7 +8,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <BgGlassmorphism />
 
       {/* SECTION HERO */}
-      <div className="container pt-10 pb-24 lg:pt-16 lg:pb-28 sticky -top-20 z-[10]">
+      <div className="container pt-10 pb-24 lg:pt-16 lg:pb-28 md:sticky -top-20 z-[10]">
         <SectionHeroArchivePage currentPage="Stays" currentTab="Stays" />
       </div>
 

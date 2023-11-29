@@ -39,7 +39,7 @@ export async function POST(request: Request) {
             ...messages
         ],
         temperature:0.6,
-        max_tokens:256
+        max_tokens:1000
     })
 
     // create a stream of data from OpenAI (stream data to the frontend)

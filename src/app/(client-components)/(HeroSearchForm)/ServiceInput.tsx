@@ -146,6 +146,7 @@ const ServiceInput: FC<ServiceInputProps> = ({
               setValue(e.currentTarget.value);
             }}
             ref={inputRef}
+            disabled
           />
           <span className="block mt-0.5 text-sm text-neutral-400 font-light ">
             <span className="line-clamp-1">{!!value ? placeHolder : desc}</span>

@@ -27,7 +27,7 @@ const CardCategory5: FC<CardCategory5Props> = ({
         <Image
           fill
           alt=""
-          src={item.logoUrl || ""}
+          src={ ""}
           className="object-cover w-full h-full rounded-2xl"
           sizes="(max-width: 400px) 100vw, 400px"
         />
