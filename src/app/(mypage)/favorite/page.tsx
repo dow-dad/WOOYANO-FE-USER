@@ -1,11 +1,15 @@
 "use client";
-
 import StayCard from "@/components/StayCard";
 import { DEMO_STAY_LISTINGS } from "@/data/listings";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import React from "react";
 
-
 const AccountSavelists = () => {
+  const session = useSession();
+  if(session.status === "unauthenticated") {
+    redirect("/login")
+  }
 
   const renderSection1 = () => {
     return (

@@ -1,6 +1,5 @@
 import React from "react";
 import { DEMO_POSTS } from "@/data/posts";
-
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import SectionLatestPosts from "../../blog/SectionLatestPosts";
 import { getServerSession } from "next-auth";
@@ -19,7 +18,7 @@ async function getServiceData (token:string, email:string) {
     return null
   }
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/reservation/list?state=전체&page=0&size=10`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/reservation/list?state=전체&page=0&size=10`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +41,7 @@ async function getServiceDetailData (serviceId: number, workerId: number, token:
   console.log("서비스 아이디 : ", serviceId)
   console.log("작업자 아이디 : ", workerId)
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/client/review/detail?serviceId=${serviceId}&workerId=${workerId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/client/review/detail?serviceId=${serviceId}&workerId=${workerId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +59,7 @@ async function getServiceDetailData (serviceId: number, workerId: number, token:
 }
 
 async function getIsReview (reservationNum: string, email: string, token: string) {
-  const response = await fetch(`http://3.35.62.185:8000/api/v1/review-bookmark/check/review/available/${reservationNum}`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/check/review/available/${reservationNum}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

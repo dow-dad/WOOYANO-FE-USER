@@ -3,7 +3,7 @@ import AccountInfo from "./accountInfo";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { BaseResDataType } from "@/types/BaseResDataType";
-import ButtonPrimary from "@/shared/ButtonPrimary";
+import { redirect } from "next/navigation";
 
 const accountInfo = async (session: any) => {
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/users/mypage/info`;
@@ -25,9 +25,11 @@ const accountInfo = async (session: any) => {
 
 async function AccountPage() {
   const session = await getServerSession(options);
+  if(!session){
+    redirect("/")
+  }
   const data: BaseResDataType = await accountInfo(session);
   return (
-    
     <AccountInfo accountInfo={data.result} session={session}/>
   );
 }

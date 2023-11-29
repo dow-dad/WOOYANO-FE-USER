@@ -1,6 +1,3 @@
-//@ts-ignore
-
-
 import BgGlassmorphism from "@/components/BgGlassmorphism";
 import SectionGridFilterCard from "../../(review)/SectionGridFilterCard";
 import { getServerSession } from "next-auth";
@@ -22,11 +19,10 @@ export interface newDataType {
 
 async function getData (token:string, email:string) {
     if (!token) {
-      console.log("세션이 만료됨")
-      return null
+      redirect("/")
     }
     try {
-      const response = await fetch(`http://3.35.62.185:8000/api/v1/review-bookmark/list`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/list`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +47,7 @@ async function getWorkerId (reservationNum:string, token:string) {
     return null
   }
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/reservation/review`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/reservation/review`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +75,7 @@ async function getWorkNameAndClientName (serviceId:number, token:string, workerI
   const serId = serviceId.toString();
   const worId = workerId.toString();
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/client/review/detail?serviceId=${serId}&workerId=${worId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/client/review/detail?serviceId=${serId}&workerId=${worId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +92,6 @@ async function getWorkNameAndClientName (serviceId:number, token:string, workerI
 }
 
 const ListingFlightsPage = async () => {
-
   const session = await getServerSession(options);
   console.log('servicehistory',session);
   if(!session){
@@ -118,34 +113,46 @@ const ListingFlightsPage = async () => {
   const res = getData(session.user.result.token, session.user.result.email);
   const data = await Promise.all([res]);
   const userName:string = await session.user.result.username;
-
   let newData:newDataType[] = []
-  
-  for (let i = 0; i < data.length; i++) {
-    const workerIds = getWorkerId(data[i].reservationNum, session.user.result.token);
-    const [workerId] = await Promise.all([workerIds]);
-    const workerNames = getWorkNameAndClientName(data[i].serviceId, session.user.result.token, workerId.workerId);
-    const [workerName] = await Promise.all([workerNames]);
-    console.log("workerName",workerName)
-    newData.push({
-      reviewId: data[i].reviewId,
-      serviceId: data[i].serviceId,
-      serviceName: workerName.serviceName,
-      reservationNum: data[i].reservationNum,
-      reuse: data[i].reuse,
-      createdAt: data[i].createdAt,
-      workerId: workerId.workerId,
-      workerName: workerName.workerName,
-      reservationDate: workerId.reservationDate
-    })
+
+  if (data[0] !== null) {  
+    for (let i = 0; i < data.length; i++) {
+      const workerIds = getWorkerId(data[i].reservationNum, session.user.result.token);
+      const [workerId] = await Promise.all([workerIds]);
+      const workerNames = getWorkNameAndClientName(data[i].serviceId, session.user.result.token, workerId.workerId);
+      const [workerName] = await Promise.all([workerNames]);
+      console.log("workerName",workerName)
+      newData.push({
+        reviewId: data[i].reviewId,
+        serviceId: data[i].serviceId,
+        serviceName: workerName.serviceName,
+        reservationNum: data[i].reservationNum,
+        reuse: data[i].reuse,
+        createdAt: data[i].createdAt,
+        workerId: workerId.workerId,
+        workerName: workerName.workerName,
+        reservationDate: workerId.reservationDate
+      })
   }
+  }
+
+
+
   console.log("newData",newData)
 
 
   return (
     <div className="nc-BlogPage overflow-hidden relative">
-      <BgGlassmorphism />
-      <SectionGridFilterCard data={newData} userName={userName}/>
+      {data===null? 
+      <p>
+        표시할 항목이 없습니다.
+      </p>
+      : 
+      <>
+          <BgGlassmorphism />
+          <SectionGridFilterCard data={newData} userName={userName}/>
+      </>
+      }
     </div>
   );
 };

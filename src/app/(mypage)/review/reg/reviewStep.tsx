@@ -45,7 +45,7 @@ const ReviewStep = () => {
     // && and 연산자 => 둘다 true이면 if문을 처리
     // || or 연산자 => 둘중에 하나라도 true면 true
       try {
-        const response = await fetch(`http://3.35.62.185:8000/api/v1/review-bookmark`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark`, {
           method: "POST", // 또는 'PUT'
           headers: {
             "Content-Type": "application/json",

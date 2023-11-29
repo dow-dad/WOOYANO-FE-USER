@@ -4,9 +4,13 @@ import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { BaseResDataType } from "@/types/BaseResDataType";
 import ButtonPrimary from "@/shared/ButtonPrimary";
+import { redirect } from "next/navigation";
 
 const addressList = async () => {
   const session = await getServerSession(options);
+  if(!session){
+    redirect("/")
+  }
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/users/address`;
   const res = await fetch(url, {
     method: "GET",

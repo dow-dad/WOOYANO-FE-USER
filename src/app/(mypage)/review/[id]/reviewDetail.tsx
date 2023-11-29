@@ -19,7 +19,7 @@ async function getReviewData(reviewId: number, session: Session) {
     return null
   }
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/review-bookmark/${reviewId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/review-bookmark/${reviewId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ async function getReviewData(reviewId: number, session: Session) {
 async function getWorkId(reservationNum: string, session: Session) {
   console.log("예약번호 : ", reservationNum)
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/reservation/review`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/reservation/review`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ async function getWorkerName(serviceId: number, workerId: number, session: Sessi
   console.log("서비스 아이디 : ", serviceId)
   console.log("작업자 아이디 : ", workerId)
   try {
-    const response = await fetch(`http://3.35.62.185:8000/api/v1/client/review/detail?serviceId=${serviceId}&workerId=${workerId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/client/review/detail?serviceId=${serviceId}&workerId=${workerId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

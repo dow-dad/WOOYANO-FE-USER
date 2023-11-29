@@ -131,7 +131,7 @@ export default function ChatComponent() {
 
 
 
-      <form className="flex absolute bottom-[150px] lg:bottom-[96px] sm:bottom-[130px] xl:bottom-24  w-[95vw]" onSubmit={checkPrompt}>
+      <form className="flex absolute bottom-[170px] lg:bottom-[96px] sm:bottom-[130px] xl:bottom-24  w-[95vw]" onSubmit={checkPrompt}>
         <div className="w-full">
           <textarea
             className=" w-full h-14 dark:bg-background2 border rounded-full pt-[14px] pl-[4rem] text-[12px]"
